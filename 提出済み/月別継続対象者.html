@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>月別継続対象者</title>
+  <style>
+    :root {
+      --text: #1a1a1a;
+      --muted: #555;
+      --border: #ddd;
+      --bg: #fafafa;
+      --accent: #2c5282;
+      --note-bg: #fff8e6;
+      --note-border: #e6c200;
+      --code-bg: #f4f4f4;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 2rem 1rem 3rem;
+      font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", Meiryo, sans-serif;
+      font-size: 15px;
+      line-height: 1.7;
+      color: var(--text);
+      background: #fff;
+    }
+
+    .container {
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: 1.6rem;
+      margin: 0 0 0.75rem;
+      line-height: 1.4;
+    }
+
+    h2 {
+      font-size: 1.15rem;
+      margin: 2.25rem 0 0.75rem;
+      padding-bottom: 0.35rem;
+      border-bottom: 2px solid var(--border);
+      color: var(--accent);
+    }
+
+    h3 {
+      font-size: 1rem;
+      margin: 1.25rem 0 0.5rem;
+      color: var(--text);
+    }
+
+    p { margin: 0.5rem 0; }
+
+    ul {
+      margin: 0.5rem 0;
+      padding-left: 1.4rem;
+    }
+
+    li { margin: 0.25rem 0; }
+
+    a { color: var(--accent); }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0.75rem 0;
+      font-size: 0.92rem;
+    }
+
+    th, td {
+      border: 1px solid var(--border);
+      padding: 0.55rem 0.7rem;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: var(--bg);
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .lead {
+      color: var(--muted);
+      margin-bottom: 1.5rem;
+    }
+
+    .member-list li {
+      font-family: "SF Mono", "Consolas", "Menlo", monospace;
+      font-size: 0.92rem;
+    }
+
+    .member-list .name {
+      font-family: inherit;
+      font-size: 1rem;
+    }
+
+    .note {
+      background: var(--note-bg);
+      border-left: 4px solid var(--note-border);
+      padding: 0.75rem 1rem;
+      margin: 1rem 0;
+      font-size: 0.95rem;
+    }
+
+    .note ul {
+      margin-top: 0.5rem;
+      margin-bottom: 0;
+    }
+
+    .template-block {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1rem 1.1rem;
+      margin: 0.75rem 0 1rem;
+      font-size: 0.88rem;
+      line-height: 1.65;
+      white-space: pre-wrap;
+      word-break: break-word;
+      overflow-x: auto;
+    }
+
+    .meta {
+      margin-top: 3rem;
+      padding-top: 1rem;
+      font-size: 0.78rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .sub-list {
+      list-style: none;
+      padding-left: 0.5rem;
+      margin-top: 0.25rem;
+    }
+
+    .sub-list li::before {
+      content: "・";
+      margin-right: 0.25rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>月別継続対象者</h1>
+    <p class="lead">毎月の月末に在籍期間終了を迎える受講生へ、継続案内を2通送る。名簿はスプレッドシートが正本。本ファイルはバックアップと送信用テンプレート置き場。</p>
+
+    <h2>スプレッドシートURL</h2>
+    <ul>
+      <li><a href="https://docs.google.com/spreadsheets/d/1lRs3UuAnHOMv3fajl1opc0XC3Fh9GloGrffMXin7wsU/edit#gid=955661234" target="_blank" rel="noopener">継続対象者管理シート</a>
+        <ul class="sub-list">
+          <li>C列：受講生 氏名</li>
+          <li>D列：Chatwork ID</li>
+        </ul>
+      </li>
+    </ul>
+
+    <h2>直近の対象者データ（バックアップ）</h2>
+    <h3>2026年06月</h3>
+    <ul class="member-list">
+      <li><span class="name">中島安紀子</span> (akiko_na)</li>
+      <li><span class="name">中里智明</span> (tomoaki_nakazato)</li>
+      <li><span class="name">川畑 一翔</span> (kawabatakazuto)</li>
+      <li><span class="name">栗林功</span> (miskocha_coo)</li>
+      <li><span class="name">稲垣あやこ</span> (linocreate)</li>
+      <li><span class="name">門馬みゆき</span> (q1tm1065ufvo)</li>
+      <li><span class="name">ピグマリオン恵美子</span> (emiko_pygmalion)</li>
+    </ul>
+    <div class="note">
+      注意: ピグマリオン恵美子さんは、サポートメンバー3名分の継続案内。
+      <ul>
+        <li>内田英恵 (2227063juldwo)</li>
+        <li>堀之内友香 (Yuka_Horinouchi)</li>
+        <li>皆川文代 (n4mij8nrk83i)</li>
+      </ul>
+    </div>
+
+    <h2>継続案内の送信スケジュール</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>テンプレート</th>
+          <th>送信タイミング</th>
+          <th>目的</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>A（月初）</td>
+          <td>毎月の初旬</td>
+          <td>当月月末で在籍終了であること、月末までに継続できる対象者であることを伝える</td>
+        </tr>
+        <tr>
+          <td>B（月末）</td>
+          <td>毎月の月末（日中）</td>
+          <td>継続オファーの内容、継続方法、決済フォーム、Loom・資料リンクを案内する</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>送信方法: Chatwork 個別メッセージ（対象者は当月分の名簿・スプレッドシートを参照）</p>
+
+    <h2>動的置換ルール</h2>
+    <ul>
+      <li><code>{送信月}</code> … 送信時の年月（例: 2026年6月、6月）</li>
+      <li>テンプレートAの「本チャットは{送信月}月末日までの」は、6月送付なら「本チャットは6月末日までの」のように置換する</li>
+      <li>テンプレートBの「{送信月}月末までの在籍となります」は、6月送付なら「6月末までの在籍となります」のように置換する</li>
+    </ul>
+
+    <h2>テンプレートA：月初（在籍期限の告知）</h2>
+    <p>送信タイミング: 毎月の初旬</p>
+    <p>以下をコピーして送信する。（6月分・置換済み）</p>
+    <div class="template-block">ども！
+
+本チャットは6月末日までの
+PLC在籍メンバーになります。
+
+
+残りの期間、是非ともPLCを使い倒してください。
+
+認定講師の個別コンサルも
+俺のグルコンも、添削チャットも
+ビジネスの方向性も含めて
+いつでも相談してください。
+
+で、PLCは年間コミュニティになりまして
+年度ごとの更新を確認するスタイルになります。
+
+近日中には継続フォームを公開しますので
+再度更新される方はお申し込みいただければと思います。
+
+詳しい条件はその時に！
+
+まずは今月末でコミュニティ在籍期限がきますよということ。
+
+せっかくですから（！？）
+今月、たくさんPLCを活用してくださいね。
+
+PS
+
+４年目の継続人たちがいるのですが
+長年在籍してもらっているので
+４年連続で在籍した人専用の価格を
+用意しようと思います。
+
+PPS
+
+2026年中には、
+プロモーションを爆速で構築できるようになる
+AIシステムを共有するつもりです。
+
+まだ今は、ローンチだけですが、
+ゆくゆくはSNSにも範囲を広げていきます。</div>
+
+    <h2>テンプレートB：月末（オファー・決済案内）</h2>
+    <p>送信タイミング: 毎月の月末（日中）</p>
+    <p>以下をコピーして送信する。（6月分・置換済み）</p>
+    <div class="template-block">■PLC継続募集のお知らせ
+
+こちらのチャットの方は
+6月末までの在籍となります。
+
+あなたが次のステージに
+いくための考え方について
+撮影したのでコンテンツを
+見てください。
+
+さらなる成長のために
+→ https://www.loom.com/share/d0431df79c2a4f2da320891b0224e2b7
+
+
+また、PLC2026の継続オファーの
+ポイント解説もしました。
+
+
+継続すると何が得られるのか？（動画）
+→ https://www.loom.com/share/fd37a971f00f4b7ab4660ff9b032519a
+
+
+資料はこちら
+→ https://qaknliuu.gensparkspace.com/
+
+
+PLC継続のオファー
+および決済フォームはこちら
+↓
+つまり申し込みはこちら
+https://docs.google.com/document/d/1bEW1TOfOa5DFqiZ8mvTNTLI3AzDuoGsfofMg8D6u0qY/edit?tab=t.0
+
+
+※PLCの2022年2月、つまり初期からいるメンバー今回から継続料金が下がります。
+4回目継続メンバーのリンクから決済してください。SS
+※自分が該当するかわからない場合は鈴木にご確認ください。
+
+
+※今回より契約がドバイ法人になります。
+※入金はオレンジセールスという決済代行会社となります。
+
+
+今月までに申し込みしてください。
+
+
+不明点や、相談したいことがある方は
+田中までご連絡ください。
+
+
+領収書などの手続きは
+鈴木にご連絡ください。
+
+
+PS
+
+
+今回のPLC継続メンバーは
+
+
+2026年中には
+僕がプロモーション、コンサルで使っている
+ナレッジを完全解放します。
+
+
+数百万円の価値があると思います。
+cursorのおかげでそれを共有できそうです。
+
+
+AIでサクサクローンチをできるように
+今年は充実させていきます。</div>
+
+    <h2>注記</h2>
+    <ul>
+      <li>テンプレートAのPPS（2026年4月のAIシステム共有など）は時期に応じて文言を見直す</li>
+      <li>テンプレートBのPSも同様。リンク・決済条件が変わったらBのみ更新する</li>
+    </ul>
+
+    <div class="meta">
+      Produced by KATSUO MARKETING<br>
+      Version: 1.3 (2026-06-09)<br>
+      Licensed to: KATSUO MARKETING Community Member<br>
+      Security Trace ID: K8P4N2RW<br>
+      Generated by: 田中祐一
+    </div>
+  </div>
+</body>
+</html>
