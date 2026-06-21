@@ -1,8 +1,8 @@
-# submit0621
+# submit
 
 田中さんへ提出した HTML ドキュメントを GitHub Pages で公開しています。
 
-**公開URL:** https://maikoyoshida29-ship-it.github.io/submit0621/
+**公開URL:** https://maikoyoshida29-ship-it.github.io/submit/
 
 ## フォルダ構成
 
