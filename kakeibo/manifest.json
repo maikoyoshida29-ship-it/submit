@@ -1,0 +1,20 @@
+{
+  "name": "現金メモ",
+  "short_name": "現金メモ",
+  "description": "現金支出を音声・スクショ・入力で記録し、Claudeに渡す",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#14352b",
+  "theme_color": "#14352b",
+  "lang": "ja",
+  "icons": [
+    {
+      "src": "./icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
