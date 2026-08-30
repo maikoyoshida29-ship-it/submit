@@ -189,6 +189,20 @@
       padding: 8px 12px; font: inherit; font-size: 13px; color: var(--ink);
     }
     .chip.on { background: var(--green); color: #fff; border-color: var(--green); }
+    .chip.big {
+      padding: 12px 10px;
+      font-size: 14px;
+      font-weight: 700;
+      border-radius: 14px;
+      text-align: center;
+    }
+    .cats-quick {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin: 8px 0 12px;
+    }
+    .cats-rest { display: flex; flex-wrap: wrap; gap: 8px; }
     .preview {
       background: #fff; border-radius: 16px; padding: 12px 14px; margin: 12px 0;
       border: 1px dashed #d8c9a4;
@@ -251,21 +265,27 @@
   </main>
 
   <div class="share-bar">
-    <button class="primary" id="btnShare" type="button">Claudeに渡す（AirDrop）</button>
+    <button class="primary" id="btnShare" type="button">家計簿へ送る（CSV）</button>
   </div>
 
   <dialog id="voiceDlg">
     <div class="sheet">
       <div class="grab"></div>
-      <h2>音声で記録</h2>
-      <p class="hint">「コンビニで380円」のように話してください。iPhoneはキーボードのマイクが一番確実です。</p>
-      <div class="center">
-        <button class="mic-btn" id="micBtn" type="button" hidden>🎙</button>
-        <p class="hint" id="micStatus" hidden></p>
-      </div>
-      <label class="field">話した内容</label>
-      <textarea id="voiceText" placeholder="例）スーパーで野菜 1,280円"></textarea>
+      <h2>音声・ひとこと</h2>
+      <p class="hint">キーボードのマイクで話してください。例：ライフ 1200 ／ 自販機 480 子どもの分 ／ 8/28 スーパー 2300</p>
+      <label class="field">ひとこと</label>
+      <textarea id="voiceText" placeholder="例）ライフ 1200"></textarea>
       <div class="preview" id="voicePreview"></div>
+      <label class="field">日付</label>
+      <input type="date" id="voiceDate" />
+      <label class="field">金額</label>
+      <input class="amount-input" id="voiceAmount" inputmode="numeric" placeholder="0" />
+      <label class="field">内容（店名・品名）</label>
+      <input id="voiceTitle" placeholder="ライフ 宿河原店" />
+      <label class="field">メモ（任意）</label>
+      <input id="voiceMemo" placeholder="子どもの分 など" />
+      <label class="field">カテゴリ（空欄でもOK）</label>
+      <div class="chips" id="voiceCats"></div>
       <div class="stack">
         <button class="primary" id="voiceSave" type="button">保存する</button>
         <button class="ghost" data-close="voiceDlg" type="button">閉じる</button>
@@ -277,7 +297,7 @@
     <div class="sheet">
       <div class="grab"></div>
       <h2>スクショ・レシート</h2>
-      <p class="hint">レシートや決済画面のスクショを添付します。金額は確認して入れてください。画像はClaudeに一緒に渡せます。</p>
+      <p class="hint">レシートや決済画面のスクショを残します。金額と店名は確認して入れてください。</p>
       <div class="row">
         <button class="secondary" id="shotCamera" type="button">写真を撮る</button>
         <button class="secondary" id="shotAlbum" type="button">アルバム</button>
@@ -287,9 +307,11 @@
       <img id="shotPreview" class="shot" alt="選択した画像" />
       <label class="field">金額</label>
       <input class="amount-input" id="shotAmount" inputmode="numeric" placeholder="0" />
-      <label class="field">メモ</label>
-      <input id="shotMemo" placeholder="店名や品目" />
-      <label class="field">カテゴリ</label>
+      <label class="field">内容（店名・品名）</label>
+      <input id="shotTitle" placeholder="ライフ 宿河原店" />
+      <label class="field">メモ（任意）</label>
+      <input id="shotMemo" placeholder="子どもの分 など" />
+      <label class="field">カテゴリ（空欄でもOK）</label>
       <div class="chips" id="shotCats"></div>
       <div class="stack">
         <button class="primary" id="shotSave" type="button">保存する</button>
@@ -306,9 +328,11 @@
       <input type="date" id="manDate" />
       <label class="field">金額</label>
       <input class="amount-input" id="manAmount" inputmode="numeric" placeholder="0" />
-      <label class="field">メモ</label>
-      <input id="manMemo" placeholder="何に使ったか" />
-      <label class="field">カテゴリ</label>
+      <label class="field">内容（店名・品名）</label>
+      <input id="manTitle" placeholder="ライフ 宿河原店" />
+      <label class="field">メモ（任意）</label>
+      <input id="manMemo" placeholder="子どもの分 など" />
+      <label class="field">カテゴリ（空欄でもOK）</label>
       <div class="chips" id="manCats"></div>
       <div class="stack">
         <button class="primary" id="manSave" type="button">保存する</button>
@@ -333,14 +357,13 @@
   <dialog id="shareDlg">
     <div class="sheet">
       <div class="grab"></div>
-      <h2>Claudeに渡す</h2>
-      <p class="hint">Markdownファイルを作ります。AirDropでMacへ送るか、Claudeアプリへ直接共有できます。</p>
+      <h2>家計簿へ送る</h2>
+      <p class="hint">CSVを作ります。AirDropでMacへ送ると、ダウンロードに入ります。送ったあとも、ここの記録は残します。</p>
       <label class="field">期間</label>
       <div class="chips" id="rangeChips"></div>
-      <label class="field"><input type="checkbox" id="includeImages" checked /> スクショも一緒に渡す</label>
       <textarea id="sharePreview" readonly style="min-height:160px;margin-top:12px"></textarea>
       <div class="stack">
-        <button class="primary" id="doShare" type="button">共有（AirDrop）</button>
+        <button class="primary" id="doShare" type="button">AirDropで送る</button>
         <button class="secondary" id="doCopy" type="button">テキストをコピー</button>
         <button class="ghost" data-close="shareDlg" type="button">閉じる</button>
       </div>

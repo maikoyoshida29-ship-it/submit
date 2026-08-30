@@ -1,16 +1,59 @@
 (() => {
-  const CATEGORIES = ["食費", "日用品", "交通", "娯楽", "医療", "衣服", "交際", "子ども", "住居", "その他"];
-  const CAT_WORDS = [
-    ["食費", /コンビニ|スーパー|弁当|ランチ|ご飯|ごはん|カフェ|スタバ|飲食|八百屋|魚|肉|パン|野菜|食材|マクド|牛丼|ラーメン|寿司/],
-    ["日用品", /ドラッグストア|薬局|洗剤|日用|ティッシュ|トイレ|無印/],
-    ["交通", /電車|バス|タクシー|駐車場|ガソリン|IC|スイカ|パスモ/],
-    ["娯楽", /映画|ゲーム|本|趣味|娯楽|マンガ|漫画/],
-    ["医療", /病院|診療|薬|歯科|クリニック/],
-    ["衣服", /服|ユニクロ|靴|衣服/],
-    ["交際", /贈|会食|プレゼント|交際/],
-    ["子ども", /子供|子ども|学|保育園|幼稚園/],
-    ["住居", /家賃|電気|ガス|水道|住居/],
+  const CATEGORIES = [
+    "食費（スーパー）",
+    "外食・カフェ",
+    "日用品",
+    "交通・Suicaチャージ",
+    "衣服・美容",
+    "医療・健康",
+    "習い事・ジム（自分）",
+    "子ども・学校（教材費など）",
+    "子ども・習い事・用品",
+    "通信・サブスク",
+    "水道光熱",
+    "住居",
+    "保険",
+    "交際費・プレゼント",
+    "趣味・娯楽",
+    "旅行・帰省",
+    "家具・家電",
+    "事業費（立替）",
+    "事業費（ビジネスカード）",
+    "分割・リボの返済",
+    "その他",
   ];
+  const QUICK_CATS = [
+    "食費（スーパー）",
+    "外食・カフェ",
+    "日用品",
+    "交通・Suicaチャージ",
+    "子ども・学校（教材費など）",
+    "子ども・習い事・用品",
+    "その他",
+  ];
+  const CAT_WORDS = [
+    ["食費（スーパー）", /スーパー|ライフ|いなげや|自販機|コンビニ|食材|野菜/],
+    ["外食・カフェ", /カフェ|スタバ|外食|レストラン|ランチ|マック|牛丼|ラーメン/],
+    ["日用品", /ドラッグストア|薬局|洗剤|日用|ティッシュ/],
+    ["交通・Suicaチャージ", /スイカ|Suica|交通|チャージ|電車|バス|タクシー|駐車場/i],
+    ["子ども・習い事・用品", /スイミング|習い事|月謝/],
+    ["子ども・学校（教材費など）", /学校|教材|学費/],
+    ["医療・健康", /病院|診療|歯科|クリニック|薬/],
+    ["衣服・美容", /服|ユニクロ|美容|髪/],
+    ["交際費・プレゼント", /プレゼント|交際|贈/],
+    ["趣味・娯楽", /映画|ゲーム|趣味|娯楽/],
+    ["住居", /家賃|住居/],
+    ["水道光熱", /電気|ガス|水道/],
+  ];
+  const OLD_CAT = {
+    食費: "食費（スーパー）",
+    交通: "交通・Suicaチャージ",
+    娯楽: "趣味・娯楽",
+    医療: "医療・健康",
+    衣服: "衣服・美容",
+    交際: "交際費・プレゼント",
+    子ども: "子ども・習い事・用品",
+  };
   const DB_NAME = "kakeibo-cash";
   const DB_VER = 1;
   const LS_KEY = "kakeibo-expenses-v1";
@@ -19,11 +62,11 @@
   const state = {
     expenses: [],
     shotFile: null,
-    shotCat: "食費",
-    manCat: "食費",
+    voiceCat: "",
+    shotCat: "",
+    manCat: "",
     range: "month",
     detailId: null,
-    recognition: null,
   };
 
   function nfkc(s) {
@@ -65,34 +108,78 @@
     if (sen) return parseInt(sen[1], 10) * 1000;
     const yenMatch = t.match(/(\d+)円/);
     if (yenMatch) return parseInt(yenMatch[1], 10);
-    const bare = t.match(/(\d{2,7})/);
+    const bare = t.match(/(\d{1,7})/);
     if (bare) return parseInt(bare[1], 10);
     return null;
   }
 
   function guessCategory(text) {
     const t = nfkc(text);
+    if (!t) return "";
     for (const [cat, re] of CAT_WORDS) {
       if (re.test(t)) return cat;
     }
-    return "その他";
+    return "";
   }
 
-  function memoFromSpeech(text, amount) {
-    let t = nfkc(text);
-    t = t.replace(/(\d+(?:\.\d+)?)万(\d+)?千?(\d*)円?/g, "");
-    t = t.replace(/\d+千円/g, "").replace(/\d{1,7}円/g, "");
-    t = t.replace(/\d{2,7}/g, "");
-    t = t.replace(/円|現金|支払っ[たて]|使った|です|ます/g, "");
-    t = t.replace(/[、。,.]+/g, " ").replace(/\s+/g, " ").trim();
-    return t || (amount ? `${yen(amount)}円の支出` : "現金支出");
+  function normalizeCategory(cat) {
+    if (!cat) return "";
+    if (CATEGORIES.includes(cat)) return cat;
+    return OLD_CAT[cat] || cat;
   }
 
-  function parseSpeech(text) {
-    const amount = parseAmount(text);
-    const category = guessCategory(text);
-    const memo = memoFromSpeech(text, amount);
-    return { amount, category, memo, raw: nfkc(text) };
+  function itemTitle(e) {
+    return e.title || e.memo || "";
+  }
+
+  function itemMemo(e) {
+    return e.title ? e.memo || "" : "";
+  }
+
+  function parseQuickInput(text) {
+    let s = nfkc(text).replace(/,/g, "").replace(/[¥￥]/g, " ");
+    const year = new Date().getFullYear();
+    let date = todayISO();
+    s = s.replace(/(?:(\d{4})[-\/年])?(\d{1,2})[\/\-月](\d{1,2})日?/, (_, y, m, d) => {
+      date = `${y ? parseInt(y, 10) : year}-${pad(parseInt(m, 10))}-${pad(parseInt(d, 10))}`;
+      return " ";
+    });
+    s = s.replace(/\s+/g, " ").trim();
+
+    let amount = null;
+    let raw = "";
+    let index = -1;
+    const man = s.match(/(\d+(?:\.\d+)?)万(\d+)?千?(\d*)円?/);
+    if (man && /万/.test(man[0])) {
+      let n = parseFloat(man[1]) * 10000;
+      if (man[2]) n += parseInt(man[2], 10) * 1000;
+      if (man[3]) n += parseInt(man[3], 10);
+      amount = Math.round(n);
+      raw = man[0];
+      index = man.index;
+    } else {
+      const withYen = s.match(/(\d+)円/);
+      const nums = [...s.matchAll(/(\d{1,7})/g)];
+      const hit = withYen || (nums.length ? nums[nums.length - 1] : null);
+      if (hit) {
+        amount = parseInt(hit[1], 10);
+        raw = hit[0];
+        index = hit.index;
+      }
+    }
+
+    let title = "";
+    let memo = "";
+    if (index >= 0) {
+      title = s.slice(0, index).trim();
+      memo = s.slice(index + raw.length).trim();
+    } else {
+      title = s;
+    }
+    title = title.replace(/円$/g, "").trim();
+    memo = memo.replace(/^円\s*/, "").trim();
+    const category = guessCategory(`${title} ${memo}`);
+    return { date, amount, title, memo, category, raw: nfkc(text) };
   }
 
   function loadExpenses() {
@@ -101,6 +188,10 @@
     } catch {
       state.expenses = [];
     }
+    state.expenses = state.expenses.map((e) => {
+      if (!e.title && e.memo) return { ...e, title: e.memo, memo: "" };
+      return e;
+    });
   }
 
   function saveExpenses() {
@@ -188,9 +279,9 @@
       date: partial.date || todayISO(),
       time: partial.time || nowHM(),
       amount: Number(partial.amount) || 0,
-      category: partial.category || "その他",
-      memo: partial.memo || "",
-      method: "現金",
+      title: nfkc(partial.title) || "",
+      category: normalizeCategory(partial.category || ""),
+      memo: nfkc(partial.memo) || "",
       source: partial.source,
       transcript: partial.transcript || "",
       imageId: partial.imageId || null,
@@ -241,11 +332,13 @@
     list.innerHTML = recent
       .map((e) => {
         const img = e.imageId ? `<img class="thumb" data-thumb="${e.imageId}" alt="" />` : "";
+        const title = itemTitle(e);
+        const cat = normalizeCategory(e.category);
         return `<button class="item${e.imageId ? " has-img" : ""}" data-id="${e.id}" type="button">
           ${img}
           <div>
-            <div class="memo">${escapeHtml(e.memo || e.category)}</div>
-            <div class="meta">${e.date} ${e.time} · ${escapeHtml(e.category)}</div>
+            <div class="memo">${escapeHtml(title || "（内容なし）")}</div>
+            <div class="meta">${e.date} ${e.time}${cat ? " · " + escapeHtml(cat) : ""}</div>
           </div>
           <div>
             <div class="yen">¥${yen(e.amount)}</div>
@@ -271,13 +364,37 @@
       .replace(/"/g, "&quot;");
   }
 
-  function renderChips(container, selected, onPick) {
-    container.innerHTML = CATEGORIES.map(
-      (c) => `<button type="button" class="chip${c === selected ? " on" : ""}" data-cat="${c}">${c}</button>`
-    ).join("");
+  function renderCats(container, selected, onPick) {
+    const rest = CATEGORIES.filter((c) => !QUICK_CATS.includes(c));
+    const emptyOn = !selected;
+    container.innerHTML = `
+      <button type="button" class="chip${emptyOn ? " on" : ""}" data-cat="">空欄（あとで）</button>
+      <div class="cats-quick">
+        ${QUICK_CATS.map(
+          (c) =>
+            `<button type="button" class="chip big${c === selected ? " on" : ""}" data-cat="${escapeHtml(c)}">${escapeHtml(c)}</button>`
+        ).join("")}
+      </div>
+      <div class="cats-rest">
+        ${rest
+          .map(
+            (c) =>
+              `<button type="button" class="chip${c === selected ? " on" : ""}" data-cat="${escapeHtml(c)}">${escapeHtml(c)}</button>`
+          )
+          .join("")}
+      </div>`;
     container.querySelectorAll("[data-cat]").forEach((btn) => {
-      btn.addEventListener("click", () => onPick(btn.getAttribute("data-cat")));
+      btn.addEventListener("click", () => onPick(btn.getAttribute("data-cat") || ""));
     });
+  }
+
+  function bindCats(containerId, key) {
+    const paint = () =>
+      renderCats($(containerId), state[key], (c) => {
+        state[key] = c;
+        paint();
+      });
+    paint();
   }
 
   function openDialog(id) {
@@ -288,62 +405,41 @@
     if ($(id).open) $(id).close();
   }
 
-  function updateVoicePreview() {
-    const parsed = parseSpeech($("voiceText").value);
+  function applyVoiceParse() {
+    const parsed = parseQuickInput($("voiceText").value);
+    $("voiceDate").value = parsed.date;
+    $("voiceAmount").value = parsed.amount != null ? String(parsed.amount) : "";
+    $("voiceTitle").value = parsed.title;
+    $("voiceMemo").value = parsed.memo;
+    state.voiceCat = parsed.category || "";
+    bindCats("voiceCats", "voiceCat");
     $("voicePreview").innerHTML = parsed.amount
-      ? `<b>読み取り</b>¥${yen(parsed.amount)} · ${escapeHtml(parsed.category)}<br>${escapeHtml(parsed.memo)}`
-      : `<b>読み取り</b>金額がまだ取れていません。数字か「◯円」を入れてください。`;
+      ? `<b>読み取り</b>${parsed.date} · ¥${yen(parsed.amount)}<br>${escapeHtml(parsed.title || "（内容を入れてください）")}${parsed.memo ? "<br>メモ: " + escapeHtml(parsed.memo) : ""}`
+      : `<b>読み取り</b>金額がまだ取れていません。「ライフ 1200」のように数字を入れてください。`;
     return parsed;
   }
 
   function setupVoice() {
-    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (SR) {
-      $("micBtn").hidden = false;
-      $("micStatus").hidden = false;
-      $("micStatus").textContent = "マイクボタンでも話せます";
-      const rec = new SR();
-      rec.lang = "ja-JP";
-      rec.interimResults = true;
-      rec.continuous = false;
-      rec.onresult = (ev) => {
-        let text = "";
-        for (const res of ev.results) text += res[0].transcript;
-        $("voiceText").value = text;
-        updateVoicePreview();
-      };
-      rec.onend = () => {
-        $("micBtn").classList.remove("live");
-        $("micStatus").textContent = "マイクボタンでも話せます";
-      };
-      rec.onerror = () => {
-        $("micBtn").classList.remove("live");
-        $("micStatus").textContent = "音声認識が使えません。キーボードのマイクを使ってください";
-      };
-      state.recognition = rec;
-      $("micBtn").onclick = () => {
-        try {
-          rec.start();
-          $("micBtn").classList.add("live");
-          $("micStatus").textContent = "聞いています…";
-        } catch {
-          rec.stop();
-        }
-      };
-    }
-    $("voiceText").addEventListener("input", updateVoicePreview);
+    $("voiceText").addEventListener("input", applyVoiceParse);
     $("voiceSave").onclick = () => {
-      const parsed = updateVoicePreview();
-      if (!parsed.amount) {
-        $("voiceText").focus();
+      const amount = parseAmount($("voiceAmount").value);
+      const title = nfkc($("voiceTitle").value);
+      if (!amount) {
+        $("voiceAmount").focus();
+        return;
+      }
+      if (!title) {
+        $("voiceTitle").focus();
         return;
       }
       addExpense({
-        amount: parsed.amount,
-        category: parsed.category,
-        memo: parsed.memo,
+        date: $("voiceDate").value || todayISO(),
+        amount,
+        title,
+        memo: nfkc($("voiceMemo").value),
+        category: state.voiceCat,
         source: "voice",
-        transcript: parsed.raw,
+        transcript: nfkc($("voiceText").value),
       });
       $("voiceText").value = "";
       closeDialog("voiceDlg");
@@ -366,8 +462,13 @@
     bindFile($("fileAlbum"), $("shotAlbum"));
     $("shotSave").onclick = async () => {
       const amount = parseAmount($("shotAmount").value);
+      const title = nfkc($("shotTitle").value);
       if (!amount) {
         $("shotAmount").focus();
+        return;
+      }
+      if (!title) {
+        $("shotTitle").focus();
         return;
       }
       let imageId = null;
@@ -377,13 +478,15 @@
       }
       addExpense({
         amount,
+        title,
+        memo: nfkc($("shotMemo").value),
         category: state.shotCat,
-        memo: nfkc($("shotMemo").value) || "レシート",
         source: "screenshot",
         imageId,
       });
       state.shotFile = null;
       $("shotAmount").value = "";
+      $("shotTitle").value = "";
       $("shotMemo").value = "";
       $("shotPreview").classList.remove("show");
       closeDialog("shotDlg");
@@ -393,18 +496,25 @@
   function setupManual() {
     $("manSave").onclick = () => {
       const amount = parseAmount($("manAmount").value);
+      const title = nfkc($("manTitle").value);
       if (!amount) {
         $("manAmount").focus();
+        return;
+      }
+      if (!title) {
+        $("manTitle").focus();
         return;
       }
       addExpense({
         date: $("manDate").value || todayISO(),
         amount,
+        title,
+        memo: nfkc($("manMemo").value),
         category: state.manCat,
-        memo: nfkc($("manMemo").value) || state.manCat,
         source: "manual",
       });
       $("manAmount").value = "";
+      $("manTitle").value = "";
       $("manMemo").value = "";
       closeDialog("manualDlg");
     };
@@ -414,7 +524,8 @@
     const item = state.expenses.find((e) => e.id === id);
     if (!item) return;
     state.detailId = id;
-    $("detailBody").innerHTML = `<b>${escapeHtml(item.memo)}</b><br>¥${yen(item.amount)} · ${escapeHtml(item.category)}<br>${item.date} ${item.time} · ${sourceLabel(item.source)}${item.transcript ? `<br>音声: ${escapeHtml(item.transcript)}` : ""}`;
+    const cat = normalizeCategory(item.category);
+    $("detailBody").innerHTML = `<b>${escapeHtml(itemTitle(item))}</b><br>¥${yen(item.amount)}${cat ? " · " + escapeHtml(cat) : ""}<br>${item.date} ${item.time} · ${sourceLabel(item.source)}${itemMemo(item) ? `<br>メモ: ${escapeHtml(itemMemo(item))}` : ""}${item.transcript ? `<br>ひとこと: ${escapeHtml(item.transcript)}` : ""}`;
     const img = $("detailImg");
     img.classList.remove("show");
     img.removeAttribute("src");
@@ -428,40 +539,38 @@
     openDialog("detailDlg");
   }
 
-  function buildMarkdown(items) {
-    const total = items.reduce((s, e) => s + Number(e.amount || 0), 0);
-    const byCat = {};
-    for (const e of items) {
-      byCat[e.category] = (byCat[e.category] || 0) + Number(e.amount || 0);
-    }
-    const catLines = Object.entries(byCat)
-      .sort((a, b) => b[1] - a[1])
-      .map(([k, v]) => `- ${k}: ¥${yen(v)}`)
-      .join("\n");
-    const rows = items
+  function csvEscape(v) {
+    const s = String(v ?? "");
+    if (/[",\n\r]/.test(s)) return `"${s.replace(/"/g, '""')}"`;
+    return s;
+  }
+
+  function exportRows(items) {
+    return items
       .slice()
-      .sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time))
-      .map(
-        (e) =>
-          `| ${e.date} | ${e.time} | ${e.amount} | ${e.category} | ${e.memo.replace(/\|/g, "/")} | ${sourceLabel(e.source)} | ${e.imageId ? "あり" : ""} |`
-      )
-      .join("\n");
-    return `# 現金支出メモ
+      .sort((a, b) => (a.date + (a.time || "")).localeCompare(b.date + (b.time || "")))
+      .map((e) => ({
+        日付: e.date,
+        金額: Math.round(Number(e.amount) || 0),
+        内容: itemTitle(e),
+        カテゴリ: normalizeCategory(e.category),
+        メモ: itemMemo(e),
+      }));
+  }
 
-期間の合計: **¥${yen(total)}**（${items.length}件）
-支払方法: 現金
+  function buildCsv(items) {
+    const rows = exportRows(items);
+    const lines = ["日付,金額,内容,カテゴリ,メモ"];
+    for (const r of rows) {
+      lines.push([r.日付, String(r.金額), r.内容, r.カテゴリ, r.メモ].map(csvEscape).join(","));
+    }
+    return lines.join("\n") + "\n";
+  }
 
-## カテゴリ内訳
-${catLines || "- なし"}
-
-## 明細
-| 日付 | 時刻 | 金額 | カテゴリ | メモ | 入力 | スクショ |
-|---|---|---:|---|---|---|---|
-${rows || "| | | | | | | |"}
-
----
-このファイルはスマホの「現金メモ」アプリから書き出した現金支出です。家計の現金出納に反映してください。スクショがある場合は添付画像も一緒に見て、金額・店名を照合してください。
-`;
+  function csvFileName(items) {
+    if (state.range === "all") return "現金_すべて.csv";
+    const key = items[0] ? monthKey(items[0].date) : monthKey(todayISO());
+    return `現金_${key}.csv`;
   }
 
   function setupShare() {
@@ -484,17 +593,16 @@ ${rows || "| | | | | | | |"}
       $("rangeChips").querySelectorAll("[data-range]").forEach((btn) => {
         btn.onclick = () => setRange(btn.getAttribute("data-range"));
       });
-      $("sharePreview").value = buildMarkdown(rangeItems());
+      $("sharePreview").value = buildCsv(rangeItems());
     };
     $("btnShare").onclick = () => {
       renderRange();
       openDialog("shareDlg");
     };
-    $("includeImages").onchange = () => renderRange();
     $("doCopy").onclick = async () => {
-      const md = buildMarkdown(rangeItems());
+      const csv = buildCsv(rangeItems());
       try {
-        await navigator.clipboard.writeText(md);
+        await navigator.clipboard.writeText(csv);
         $("doCopy").textContent = "コピーしました";
         setTimeout(() => {
           $("doCopy").textContent = "テキストをコピー";
@@ -506,24 +614,11 @@ ${rows || "| | | | | | | |"}
     };
     $("doShare").onclick = async () => {
       const items = rangeItems();
-      const md = buildMarkdown(items);
-      const files = [
-        new File([md], `現金支出_${todayISO()}.md`, { type: "text/markdown" }),
-      ];
-      if ($("includeImages").checked) {
-        let i = 1;
-        for (const e of items) {
-          if (!e.imageId) continue;
-          const blob = await getImage(e.imageId);
-          if (!blob) continue;
-          const ext = (blob.type || "").includes("png") ? "png" : "jpg";
-          files.push(new File([blob], `スクショ_${e.date}_${i}.${ext}`, { type: blob.type || "image/jpeg" }));
-          i += 1;
-        }
-      }
+      const csv = buildCsv(items);
+      const file = new File(["\uFEFF" + csv], csvFileName(items), { type: "text/csv" });
       try {
-        if (navigator.canShare && navigator.canShare({ files })) {
-          await navigator.share({ files, title: "現金支出メモ" });
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          await navigator.share({ files: [file], title: file.name });
           return;
         }
       } catch (err) {
@@ -531,23 +626,22 @@ ${rows || "| | | | | | | |"}
       }
       try {
         if (navigator.share) {
-          await navigator.share({ title: "現金支出メモ", text: md });
+          await navigator.share({ title: file.name, text: csv });
           return;
         }
       } catch (err) {
         if (err && err.name === "AbortError") return;
       }
-      const blob = new Blob([md], { type: "text/markdown" });
       const a = document.createElement("a");
-      a.href = URL.createObjectURL(blob);
-      a.download = `現金支出_${todayISO()}.md`;
+      a.href = URL.createObjectURL(file);
+      a.download = file.name;
       a.click();
     };
-    state.renderRange = renderRange;
   }
 
   function setupInstallHint() {
-    const standalone = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone;
+    const standalone =
+      window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone;
     if (!standalone) $("installHint").hidden = false;
   }
 
@@ -562,9 +656,34 @@ ${rows || "| | | | | | | |"}
 
   $("btnVoice").onclick = () => {
     $("voiceText").value = "";
-    updateVoicePreview();
+    $("voiceDate").value = todayISO();
+    $("voiceAmount").value = "";
+    $("voiceTitle").value = "";
+    $("voiceMemo").value = "";
+    state.voiceCat = "";
+    bindCats("voiceCats", "voiceCat");
+    applyVoiceParse();
     openDialog("voiceDlg");
     setTimeout(() => $("voiceText").focus(), 250);
+  };
+  $("btnShot").onclick = () => {
+    state.shotFile = null;
+    state.shotCat = "";
+    $("shotAmount").value = "";
+    $("shotTitle").value = "";
+    $("shotMemo").value = "";
+    $("shotPreview").classList.remove("show");
+    bindCats("shotCats", "shotCat");
+    openDialog("shotDlg");
+  };
+  $("btnManual").onclick = () => {
+    state.manCat = "";
+    $("manDate").value = todayISO();
+    $("manAmount").value = "";
+    $("manTitle").value = "";
+    $("manMemo").value = "";
+    bindCats("manCats", "manCat");
+    openDialog("manualDlg");
   };
   $("detailDelete").onclick = async () => {
     const item = state.expenses.find((e) => e.id === state.detailId);
@@ -575,34 +694,8 @@ ${rows || "| | | | | | | |"}
     render();
   };
 
-  const bindCats = (containerId, key) => {
-    const paint = () =>
-      renderChips($(containerId), state[key], (c) => {
-        state[key] = c;
-        paint();
-      });
-    paint();
-    return paint;
-  };
-  $("btnShot").onclick = () => {
-    state.shotFile = null;
-    state.shotCat = "食費";
-    $("shotAmount").value = "";
-    $("shotMemo").value = "";
-    $("shotPreview").classList.remove("show");
-    bindCats("shotCats", "shotCat");
-    openDialog("shotDlg");
-  };
-  $("btnManual").onclick = () => {
-    state.manCat = "食費";
-    $("manDate").value = todayISO();
-    $("manAmount").value = "";
-    $("manMemo").value = "";
-    bindCats("manCats", "manCat");
-    openDialog("manualDlg");
-  };
-
   loadExpenses();
+  saveExpenses();
   setupVoice();
   setupShot();
   setupManual();
