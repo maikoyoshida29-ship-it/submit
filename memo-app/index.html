@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#E07656">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="メモ">
+  <meta name="description" content="買うもの・買う予定・やること・その他を、音声または文字でメモするアプリ">
+  <title>かんたんメモ</title>
+  <link rel="manifest" href="./manifest.json">
+  <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="./icons/icon-192.png">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="app" id="app" data-tab="shopping">
+    <header class="header">
+      <div class="header-top">
+        <h1>かんたんメモ</h1>
+        <button type="button" class="icon-btn" id="installHintBtn" aria-label="ホーム画面への追加方法" title="ホーム画面に追加">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 3v12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M8 7l4-4 4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+      <nav class="tabs" role="tablist" aria-label="メモの種類">
+        <button type="button" class="tab is-active" role="tab" aria-selected="true" data-tab="shopping">買うもの</button>
+        <button type="button" class="tab" role="tab" aria-selected="false" data-tab="planned">買う予定</button>
+        <button type="button" class="tab" role="tab" aria-selected="false" data-tab="todo">やること</button>
+        <button type="button" class="tab" role="tab" aria-selected="false" data-tab="other">その他</button>
+      </nav>
+    </header>
+
+    <main class="main" id="list" aria-live="polite"></main>
+
+    <footer class="composer">
+      <div class="remind-bar" id="remindBar" hidden>
+        <button type="button" class="remind-chip" id="remindChip">
+          <span class="remind-chip-icon" aria-hidden="true">🔔</span>
+          <span id="remindChipLabel">リマインドを付ける</span>
+        </button>
+        <button type="button" class="remind-clear" id="remindClear" hidden aria-label="リマインドをやめる">×</button>
+      </div>
+      <div class="planned-bar" id="plannedBar" hidden>
+        <div class="when-row" id="whenRow">
+          <button type="button" class="when-btn" data-when="asap">なる早</button>
+          <button type="button" class="when-btn is-on" data-when="someday">いつか</button>
+          <button type="button" class="when-btn" data-when="date">日付</button>
+        </div>
+        <input id="plannedDate" type="date" form="addForm" hidden>
+        <label class="amount-field" for="amountInput">
+          <span aria-hidden="true">¥</span>
+          <input id="amountInput" form="addForm" type="text" inputmode="numeric" enterkeyhint="done" autocomplete="off" maxlength="12" placeholder="金額">
+        </label>
+      </div>
+      <form class="input-row" id="addForm">
+        <button type="button" class="mic-btn" id="micBtn" aria-label="音声で入力">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="9" y="3" width="6" height="11" rx="3" fill="currentColor"/>
+            <path d="M6 11a6 6 0 0 0 12 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M12 17v3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+        <input
+          id="textInput"
+          type="text"
+          enterkeyhint="done"
+          autocomplete="off"
+          autocapitalize="off"
+          maxlength="200"
+          placeholder="メモを入力"
+        >
+        <button type="submit" class="add-btn" id="addBtn">追加</button>
+      </form>
+    </footer>
+  </div>
+
+  <div class="overlay" id="listenOverlay" hidden>
+    <div class="listen-card">
+      <div class="listen-pulse" aria-hidden="true"></div>
+      <p class="listen-title">聞いています…</p>
+      <p class="listen-text" id="listenText">話してください</p>
+      <button type="button" class="ghost-btn" id="listenCancel">キャンセル</button>
+    </div>
+  </div>
+
+  <div class="overlay" id="sheetOverlay" hidden>
+    <div class="sheet" role="dialog" aria-labelledby="sheetTitle">
+      <h2 id="sheetTitle">リマインド</h2>
+      <p class="sheet-item" id="sheetItemText"></p>
+      <div class="quick-row">
+        <button type="button" class="quick-btn" data-quick="1h">1時間後</button>
+        <button type="button" class="quick-btn" data-quick="tonight">今夜 20:00</button>
+        <button type="button" class="quick-btn" data-quick="tomorrow">明日 9:00</button>
+      </div>
+      <label class="dt-label" for="sheetDateTime">日時を指定</label>
+      <input id="sheetDateTime" type="datetime-local">
+      <div class="sheet-actions">
+        <button type="button" class="ghost-btn" id="sheetRemove">解除</button>
+        <button type="button" class="ghost-btn" id="sheetCancel">閉じる</button>
+        <button type="button" class="primary-btn" id="sheetSave">設定</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay" id="plannedOverlay" hidden>
+    <div class="sheet" role="dialog" aria-labelledby="plannedSheetTitle">
+      <h2 id="plannedSheetTitle">買う予定を編集</h2>
+      <p class="sheet-item" id="plannedItemText"></p>
+      <p class="dt-label">金額</p>
+      <label class="amount-field" for="plannedEditAmount">
+        <span aria-hidden="true">¥</span>
+        <input id="plannedEditAmount" type="text" inputmode="numeric" enterkeyhint="done" autocomplete="off" maxlength="12" placeholder="金額">
+      </label>
+      <p class="dt-label">いつごろ買うか</p>
+      <div class="when-row" id="plannedEditWhen">
+        <button type="button" class="when-btn" data-when="asap">なる早</button>
+        <button type="button" class="when-btn" data-when="someday">いつか</button>
+        <button type="button" class="when-btn" data-when="date">日付</button>
+      </div>
+      <input id="plannedEditDate" type="date">
+      <div class="sheet-actions">
+        <button type="button" class="ghost-btn" id="plannedEditCancel">閉じる</button>
+        <button type="button" class="primary-btn" id="plannedEditSave">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay" id="installOverlay" hidden>
+    <div class="sheet" role="dialog" aria-labelledby="installTitle">
+      <h2 id="installTitle">ホーム画面に追加</h2>
+      <p class="install-lead">スマホのアプリのように使えます。やることの通知も届きやすくなります。</p>
+      <ol class="install-steps">
+        <li><strong>iPhone</strong>：Safari の共有ボタン → 「ホーム画面に追加」</li>
+        <li><strong>Android</strong>：Chrome のメニュー → 「ホーム画面に追加」</li>
+      </ol>
+      <div class="sheet-actions">
+        <button type="button" class="primary-btn" id="installClose">わかった</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" hidden></div>
+  <script src="./app.js"></script>
+</body>
+</html>
