@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow">
+  <title>まだ回答のない人リスト（10月5日18:30現在）</title>
+  <style>
+    :root {
+      --bg: #f8f9fb;
+      --card: #fff;
+      --text: #1a1a2e;
+      --muted: #5c6370;
+      --accent: #2563eb;
+      --border: #e2e8f0;
+      --high: #dc2626;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    header {
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      padding: 1.25rem 1.5rem 1rem;
+    }
+    h1 { margin: 0 0 0.2rem; font-size: 1.45rem; font-weight: 700; }
+    .asof { margin: 0; color: var(--muted); font-size: 1rem; }
+    main {
+      max-width: 880px;
+      margin: 0 auto;
+      padding: 1rem 1.25rem 2.5rem;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1rem 1.15rem;
+      margin-bottom: 0.9rem;
+    }
+    .count {
+      font-size: 1.75rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+    .count span { font-size: 0.95rem; font-weight: 500; color: var(--muted); margin-left: 0.25rem; }
+    a { color: var(--accent); }
+    .links p { margin: 0.35rem 0; }
+    .links .label { display: inline-block; min-width: 5.5em; color: var(--muted); }
+    .toolbar {
+      display: flex;
+      gap: 0.6rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    input[type="search"] {
+      flex: 1;
+      min-width: 12rem;
+      font: inherit;
+      padding: 0.45rem 0.7rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+    }
+    button {
+      font: inherit;
+      background: var(--accent);
+      color: #fff;
+      border: 0;
+      border-radius: 8px;
+      padding: 0.45rem 0.85rem;
+      cursor: pointer;
+    }
+    button.secondary { background: #fff; color: var(--text); border: 1px solid var(--border); }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+    }
+    th, td {
+      text-align: left;
+      padding: 0.45rem 0.6rem;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+    th { color: var(--muted); font-weight: 600; font-size: 0.82rem; }
+    td.num { width: 3.2rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.88rem;
+    }
+    tr.missing td, td.missing { color: var(--high); }
+    .note { color: var(--muted); font-size: 0.88rem; margin: 0.35rem 0 0; }
+    textarea {
+      width: 100%;
+      min-height: 8rem;
+      font: 0.85rem/1.5 ui-monospace, SFMono-Regular, Menlo, monospace;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.6rem;
+      resize: vertical;
+    }
+    @media print {
+      body { background: #fff; }
+      header, .card { border: 0; box-shadow: none; }
+      .toolbar, textarea, button, .note-screen { display: none; }
+      main { max-width: none; padding: 0; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>まだ回答のない人リスト</h1>
+    <p class="asof">10月5日18:30現在</p>
+  </header>
+  <main>
+    <section class="card">
+      <div class="count">121<span>名</span></div>
+      <p class="note">PLC一覧で表示されている人のうち、10/17ワークショップの出欠にまだ回答がない人です。フィルタで隠れている行は含めていません。</p>
+    </section>
+    <section class="card links">
+      <p><span class="label">出欠一覧</span><a href="https://docs.google.com/spreadsheets/d/18-SpSZq4yatr01YILrruZB-HkYj6JqBB5gDwKeb5E5Q/edit?resourcekey=&amp;gid=408658295#gid=408658295">10/17WS 申し込みフォーム（回答）</a></p>
+      <p><span class="label">会員一覧</span><a href="https://docs.google.com/spreadsheets/d/1lRs3UuAnHOMv3fajl1opc0XC3Fh9GloGrffMXin7wsU/edit?gid=269612367#gid=269612367">PLC一覧</a></p>
+    </section>
+    <section class="card">
+      <div class="toolbar">
+        <input type="search" id="q" placeholder="名前・Chatwork IDで絞り込み" aria-label="絞り込み" />
+        <button type="button" id="copy">名前,IDをコピー</button>
+      </div>
+      <p class="note" id="shown">121名を表示</p>
+      <table>
+        <thead>
+          <tr><th>No.</th><th>名前</th><th>Chatwork ID</th></tr>
+        </thead>
+        <tbody id="list">
+<tr data-q="山田さをり 25l7piy43o4gk"><td class="num">1</td><td>山田さをり</td><td><code>25l7piy43o4gk</code></td></tr>
+<tr data-q="坪田真弓 1dnvweciq6ank"><td class="num">2</td><td>坪田真弓</td><td><code>1dnvweciq6ank</code></td></tr>
+<tr data-q="田口恵一 taguchi721"><td class="num">3</td><td>田口恵一</td><td><code>taguchi721</code></td></tr>
+<tr data-q="藤永勝人（勝也） katsuyafujinaga"><td class="num">4</td><td>藤永勝人（勝也）</td><td><code>katsuyafujinaga</code></td></tr>
+<tr data-q="伊藤裕介 im5769"><td class="num">5</td><td>伊藤裕介</td><td><code>im5769</code></td></tr>
+<tr data-q="秋山直寛 1jsygxveue7up"><td class="num">6</td><td>秋山直寛</td><td><code>1jsygxveue7up</code></td></tr>
+<tr data-q="本田有紀華 yukika4927"><td class="num">7</td><td>本田有紀華</td><td><code>yukika4927</code></td></tr>
+<tr data-q="加藤太樹 daikikato1012"><td class="num">8</td><td>加藤太樹</td><td><code>daikikato1012</code></td></tr>
+<tr data-q="砂川陽輝 sunataka_daiz"><td class="num">9</td><td>砂川陽輝</td><td><code>sunataka_daiz</code></td></tr>
+<tr data-q="高山翔伍 takayama88"><td class="num">10</td><td>高山翔伍</td><td><code>takayama88</code></td></tr>
+<tr data-q="増田 和彦 masuda3"><td class="num">11</td><td>増田 和彦</td><td><code>masuda3</code></td></tr>
+<tr data-q="奥澤智宏 1hux5o5ot4xaf"><td class="num">12</td><td>奥澤智宏</td><td><code>1hux5o5ot4xaf</code></td></tr>
+<tr data-q="マンディス理恵 SriSaumya"><td class="num">13</td><td>マンディス理恵</td><td><code>SriSaumya</code></td></tr>
+<tr data-q="たかみず保江 2j2htucha7qcs"><td class="num">14</td><td>たかみず保江</td><td><code>2j2htucha7qcs</code></td></tr>
+<tr data-q="柴川 桂子 ur23owsg32x9"><td class="num">15</td><td>柴川 桂子</td><td><code>ur23owsg32x9</code></td></tr>
+<tr data-q="湊 たける mmp1017"><td class="num">16</td><td>湊 たける</td><td><code>mmp1017</code></td></tr>
+<tr data-q="杉崎記子 e6g2wsif4poe"><td class="num">17</td><td>杉崎記子</td><td><code>e6g2wsif4poe</code></td></tr>
+<tr data-q="及川徳子 1nio75oy0gvo5"><td class="num">18</td><td>及川徳子</td><td><code>1nio75oy0gvo5</code></td></tr>
+<tr data-q="谷口利治 36avgmf0hwmcc"><td class="num">19</td><td>谷口利治</td><td><code>36avgmf0hwmcc</code></td></tr>
+<tr data-q="松井延子 hasunomi888"><td class="num">20</td><td>松井延子</td><td><code>hasunomi888</code></td></tr>
+<tr data-q="門垣千春 Cheers_chiharukadogaki"><td class="num">21</td><td>門垣千春</td><td><code>Cheers_chiharukadogaki</code></td></tr>
+<tr data-q="森岡 美子 kadzumiko"><td class="num">22</td><td>森岡 美子</td><td><code>kadzumiko</code></td></tr>
+<tr data-q="神田 亜希 qabqe2fn8eha"><td class="num">23</td><td>神田 亜希</td><td><code>qabqe2fn8eha</code></td></tr>
+<tr data-q="小熊真人 masato-oguma"><td class="num">24</td><td>小熊真人</td><td><code>masato-oguma</code></td></tr>
+<tr data-q="久保田くうき kuki_kubota"><td class="num">25</td><td>久保田くうき</td><td><code>kuki_kubota</code></td></tr>
+<tr data-q="筏井 恵太 ikadai"><td class="num">26</td><td>筏井 恵太</td><td><code>ikadai</code></td></tr>
+<tr data-q="田所 康 Yasushi-Tadokoro"><td class="num">27</td><td>田所 康</td><td><code>Yasushi-Tadokoro</code></td></tr>
+<tr data-q="田部 竜馬 RYM"><td class="num">28</td><td>田部 竜馬</td><td><code>RYM</code></td></tr>
+<tr data-q="中田俊之 Hoshino1027"><td class="num">29</td><td>中田俊之</td><td><code>Hoshino1027</code></td></tr>
+<tr data-q="月森 かいと kaitotsukimori"><td class="num">30</td><td>月森 かいと</td><td><code>kaitotsukimori</code></td></tr>
+<tr data-q="梶川奈津美 n_kajikawa"><td class="num">31</td><td>梶川奈津美</td><td><code>n_kajikawa</code></td></tr>
+<tr data-q="伴多洋美 Winds-163"><td class="num">32</td><td>伴多洋美</td><td><code>Winds-163</code></td></tr>
+<tr data-q="嶺島華蓮 kxxbb"><td class="num">33</td><td>嶺島華蓮</td><td><code>kxxbb</code></td></tr>
+<tr data-q="川越恵 longseller"><td class="num">34</td><td>川越恵</td><td><code>longseller</code></td></tr>
+<tr data-q="岩田妙 2wopu5n156sks"><td class="num">35</td><td>岩田妙</td><td><code>2wopu5n156sks</code></td></tr>
+<tr data-q="竹元真美 mami2127"><td class="num">36</td><td>竹元真美</td><td><code>mami2127</code></td></tr>
+<tr data-q="天野千恵里 cherry168"><td class="num">37</td><td>天野千恵里</td><td><code>cherry168</code></td></tr>
+<tr data-q="木田由香利 yukari_wcon"><td class="num">38</td><td>木田由香利</td><td><code>yukari_wcon</code></td></tr>
+<tr data-q="門馬みゆき q1tm1065ufvo"><td class="num">39</td><td>門馬みゆき</td><td><code>q1tm1065ufvo</code></td></tr>
+<tr data-q="中島安紀子 akiko_na"><td class="num">40</td><td>中島安紀子</td><td><code>akiko_na</code></td></tr>
+<tr data-q="栗林功 miskocha_coo"><td class="num">41</td><td>栗林功</td><td><code>miskocha_coo</code></td></tr>
+<tr data-q="鈴木雅博 michael358"><td class="num">42</td><td>鈴木雅博</td><td><code>michael358</code></td></tr>
+<tr data-q="齋藤伸也 shinya0124"><td class="num">43</td><td>齋藤伸也</td><td><code>shinya0124</code></td></tr>
+<tr data-q="森谷俊之 toshiuki"><td class="num">44</td><td>森谷俊之</td><td><code>toshiuki</code></td></tr>
+<tr data-q="橘孝行 tachibana-takayuki"><td class="num">45</td><td>橘孝行</td><td><code>tachibana-takayuki</code></td></tr>
+<tr data-q="西畑ありさ 1exia5c3ugrfh"><td class="num">46</td><td>西畑ありさ</td><td><code>1exia5c3ugrfh</code></td></tr>
+<tr data-q="山本拓弥 chogori"><td class="num">47</td><td>山本拓弥</td><td><code>chogori</code></td></tr>
+<tr data-q="植木拓 2bttxcbtt2xwk"><td class="num">48</td><td>植木拓</td><td><code>2bttxcbtt2xwk</code></td></tr>
+<tr data-q="田中三千代 4618472"><td class="num">49</td><td>田中三千代</td><td><code>4618472</code></td></tr>
+<tr data-q="森田千尋 wh5c2w6ib68q"><td class="num">50</td><td>森田千尋</td><td><code>wh5c2w6ib68q</code></td></tr>
+<tr data-q="中村貴之 catalog"><td class="num">51</td><td>中村貴之</td><td><code>catalog</code></td></tr>
+<tr data-q="長谷川誠 hase_mako"><td class="num">52</td><td>長谷川誠</td><td><code>hase_mako</code></td></tr>
+<tr data-q="永瀬まみ 1tgjegjet86l0"><td class="num">53</td><td>永瀬まみ</td><td><code>1tgjegjet86l0</code></td></tr>
+<tr data-q="広田純子 hirojun55"><td class="num">54</td><td>広田純子</td><td><code>hirojun55</code></td></tr>
+<tr data-q="草刈亜希 22ugsr7iz680w"><td class="num">55</td><td>草刈亜希</td><td><code>22ugsr7iz680w</code></td></tr>
+<tr data-q="細田収 hosoyan"><td class="num">56</td><td>細田収</td><td><code>hosoyan</code></td></tr>
+<tr data-q="橋本和美 2anw1x7dwi3os"><td class="num">57</td><td>橋本和美</td><td><code>2anw1x7dwi3os</code></td></tr>
+<tr data-q="日比野幸 2lmg6rg5i3s4s"><td class="num">58</td><td>日比野幸</td><td><code>2lmg6rg5i3s4s</code></td></tr>
+<tr data-q="村松ゆみこ yumiko-muramatsu"><td class="num">59</td><td>村松ゆみこ</td><td><code>yumiko-muramatsu</code></td></tr>
+<tr data-q="白崎詩織 beca7rzvi562"><td class="num">60</td><td>白崎詩織</td><td><code>beca7rzvi562</code></td></tr>
+<tr data-q="桑田幸江 lallure"><td class="num">61</td><td>桑田幸江</td><td><code>lallure</code></td></tr>
+<tr data-q="工藤佐和子 kudo030"><td class="num">62</td><td>工藤佐和子</td><td><code>kudo030</code></td></tr>
+<tr data-q="新田英博 hiderann"><td class="num">63</td><td>新田英博</td><td><code>hiderann</code></td></tr>
+<tr data-q="松本暁快 akkiestyle"><td class="num">64</td><td>松本暁快</td><td><code>akkiestyle</code></td></tr>
+<tr data-q="坂本浩介 2w8dundia1c9"><td class="num">65</td><td>坂本浩介</td><td><code>2w8dundia1c9</code></td></tr>
+<tr data-q="石橋誠 31lh13hycnqcg"><td class="num">66</td><td>石橋誠</td><td><code>31lh13hycnqcg</code></td></tr>
+<tr data-q="齋藤ひとみ hitomi-saito"><td class="num">67</td><td>齋藤ひとみ</td><td><code>hitomi-saito</code></td></tr>
+<tr data-q="大澤恵美 2732902"><td class="num">68</td><td>大澤恵美</td><td><code>2732902</code></td></tr>
+<tr data-q="小笠原映子 1w7vpundxk25t"><td class="num">69</td><td>小笠原映子</td><td><code>1w7vpundxk25t</code></td></tr>
+<tr data-q="神藤英輔 takumrsk"><td class="num">70</td><td>神藤英輔</td><td><code>takumrsk</code></td></tr>
+<tr data-q="本田翔也 13bkldtx0m257"><td class="num">71</td><td>本田翔也</td><td><code>13bkldtx0m257</code></td></tr>
+<tr data-q="高橋崚 clmbx6n3j8t1"><td class="num">72</td><td>高橋崚</td><td><code>clmbx6n3j8t1</code></td></tr>
+<tr data-q="藤田かこ 20yuxppkmz5wc"><td class="num">73</td><td>藤田かこ</td><td><code>20yuxppkmz5wc</code></td></tr>
+<tr data-q="坂本登 sakamoto0303"><td class="num">74</td><td>坂本登</td><td><code>sakamoto0303</code></td></tr>
+<tr data-q="木戸一敏 moel"><td class="num">75</td><td>木戸一敏</td><td><code>moel</code></td></tr>
+<tr data-q="山本 大 masaru830"><td class="num">76</td><td>山本 大</td><td><code>masaru830</code></td></tr>
+<tr data-q="木下亮雄 akiok"><td class="num">77</td><td>木下亮雄</td><td><code>akiok</code></td></tr>
+<tr data-q="下村珠世 7270831"><td class="num">78</td><td>下村珠世</td><td><code>7270831</code></td></tr>
+<tr data-q="神田久美 1oip6zf7259q9"><td class="num">79</td><td>神田久美</td><td><code>1oip6zf7259q9</code></td></tr>
+<tr data-q="藤波直子 gayatri"><td class="num">80</td><td>藤波直子</td><td><code>gayatri</code></td></tr>
+<tr data-q="大熊朋子 t_ookuma"><td class="num">81</td><td>大熊朋子</td><td><code>t_ookuma</code></td></tr>
+<tr data-q="森川佳須代 3p8h897o4ps08"><td class="num">82</td><td>森川佳須代</td><td><code>3p8h897o4ps08</code></td></tr>
+<tr data-q="豊田雅浩 CONCREATE"><td class="num">83</td><td>豊田雅浩</td><td><code>CONCREATE</code></td></tr>
+<tr data-q="小倉里枝 26vylw69ntgk4"><td class="num">84</td><td>小倉里枝</td><td><code>26vylw69ntgk4</code></td></tr>
+<tr data-q="吉沼浩 2k14dkabru048"><td class="num">85</td><td>吉沼浩</td><td><code>2k14dkabru048</code></td></tr>
+<tr data-q="河野弘典 hironori0903"><td class="num">86</td><td>河野弘典</td><td><code>hironori0903</code></td></tr>
+<tr data-q="丸山拓臣 maruyamatakumi"><td class="num">87</td><td>丸山拓臣</td><td><code>maruyamatakumi</code></td></tr>
+<tr data-q="中辰哉 m29ovty78hp3"><td class="num">88</td><td>中辰哉</td><td><code>m29ovty78hp3</code></td></tr>
+<tr data-q="神村侑希 2ttu9n2hf8cgk"><td class="num">89</td><td>神村侑希</td><td><code>2ttu9n2hf8cgk</code></td></tr>
+<tr data-q="大平和幸 sandhill"><td class="num">90</td><td>大平和幸</td><td><code>sandhill</code></td></tr>
+<tr data-q="島田旬志 shima39"><td class="num">91</td><td>島田旬志</td><td><code>shima39</code></td></tr>
+<tr data-q="宇佐美晴朗 u1ogzmsddfjz"><td class="num">92</td><td>宇佐美晴朗</td><td><code>u1ogzmsddfjz</code></td></tr>
+<tr data-q="馬場三奈 3e0gei7r4bokk"><td class="num">93</td><td>馬場三奈</td><td><code>3e0gei7r4bokk</code></td></tr>
+<tr data-q="草加晃臣 1h0ab07qfau03"><td class="num">94</td><td>草加晃臣</td><td><code>1h0ab07qfau03</code></td></tr>
+<tr data-q="野瀬貴士 1bumworycz6fd"><td class="num">95</td><td>野瀬貴士</td><td><code>1bumworycz6fd</code></td></tr>
+<tr data-q="平尾玲奈 34wwlze4gb40w"><td class="num">96</td><td>平尾玲奈</td><td><code>34wwlze4gb40w</code></td></tr>
+<tr data-q="藤田寿江 toshie55"><td class="num">97</td><td>藤田寿江</td><td><code>toshie55</code></td></tr>
+<tr data-q="高木徹 3vxhhwxz7og0s"><td class="num">98</td><td>高木徹</td><td><code>3vxhhwxz7og0s</code></td></tr>
+<tr data-q="牧 隆行 rollupjp"><td class="num">99</td><td>牧 隆行</td><td><code>rollupjp</code></td></tr>
+<tr data-q="白崎ほなみ whe4r5qdocat"><td class="num">100</td><td>白崎ほなみ</td><td><code>whe4r5qdocat</code></td></tr>
+<tr data-q="加藤慎二 SK0007"><td class="num">101</td><td>加藤慎二</td><td><code>SK0007</code></td></tr>
+<tr data-q="鴇田真弥 3aqo73f5hlycw"><td class="num">102</td><td>鴇田真弥</td><td><code>3aqo73f5hlycw</code></td></tr>
+<tr data-q="竹岡 佳信 nobu_takeoka"><td class="num">103</td><td>竹岡 佳信</td><td><code>nobu_takeoka</code></td></tr>
+<tr data-q="高本栄子 7558565"><td class="num">104</td><td>高本栄子</td><td><code>7558565</code></td></tr>
+<tr data-q="小迫優子 3fwhk4d6mm684"><td class="num">105</td><td>小迫優子</td><td><code>3fwhk4d6mm684</code></td></tr>
+<tr data-q="花咲彩 ayahanasaki"><td class="num">106</td><td>花咲彩</td><td><code>ayahanasaki</code></td></tr>
+<tr data-q="鈴木夏香 natsukah"><td class="num">107</td><td>鈴木夏香</td><td><code>natsukah</code></td></tr>
+<tr data-q="高野 浩 t1jlb8cj2r9a"><td class="num">108</td><td>高野 浩</td><td><code>t1jlb8cj2r9a</code></td></tr>
+<tr data-q="土師 鈴子 panthers_haji"><td class="num">109</td><td>土師 鈴子</td><td><code>panthers_haji</code></td></tr>
+<tr data-q="雲野 和哉 kazuya_u"><td class="num">110</td><td>雲野 和哉</td><td><code>kazuya_u</code></td></tr>
+<tr data-q="田中直子 Naoko_Tanaka"><td class="num">111</td><td>田中直子</td><td><code>Naoko_Tanaka</code></td></tr>
+<tr data-q="塩川真澄 mas7799"><td class="num">112</td><td>塩川真澄</td><td><code>mas7799</code></td></tr>
+<tr data-q="坂井宏爾 sakaikoji"><td class="num">113</td><td>坂井宏爾</td><td><code>sakaikoji</code></td></tr>
+<tr data-q="橘美奈 sgoc6ujbtngr"><td class="num">114</td><td>橘美奈</td><td><code>sgoc6ujbtngr</code></td></tr>
+<tr data-q="船引佑太 bibikio"><td class="num">115</td><td>船引佑太</td><td><code>bibikio</code></td></tr>
+<tr data-q="山口真導 bizubu"><td class="num">116</td><td>山口真導</td><td><code>bizubu</code></td></tr>
+<tr data-q="山崎南（育休中） 2uz80l24sq2og"><td class="num">117</td><td>山崎南（育休中）</td><td><code>2uz80l24sq2og</code></td></tr>
+<tr data-q="ヴィスファダー夏海（育休中） alpacamoco1440"><td class="num">118</td><td>ヴィスファダー夏海（育休中）</td><td><code>alpacamoco1440</code></td></tr>
+<tr data-q="山本リカ（育休中） 24p6a9bp1lhc0"><td class="num">119</td><td>山本リカ（育休中）</td><td><code>24p6a9bp1lhc0</code></td></tr>
+<tr data-q="井田玲華（育休中） 21dtangy03q8k"><td class="num">120</td><td>井田玲華（育休中）</td><td><code>21dtangy03q8k</code></td></tr>
+<tr data-q="戸口悠里（サポートメンバー） 1lme78j55vivo"><td class="num">121</td><td>戸口悠里（サポートメンバー）</td><td><code>1lme78j55vivo</code></td></tr>
+        </tbody>
+      </table>
+      <p class="note">A列が「育休中」「サポートメンバー」の人は、名前のあとにその区分を付けています。欄所友子さん・高橋教恵さん・坂上裕美子さんは除いています。</p>
+    </section>
+    <section class="card">
+      <p class="note" style="margin-top:0">コピペ用（名前,Chatwork ID）</p>
+      <textarea id="tsv" readonly>山田さをり,25l7piy43o4gk
+坪田真弓,1dnvweciq6ank
+田口恵一,taguchi721
+藤永勝人（勝也）,katsuyafujinaga
+伊藤裕介,im5769
+秋山直寛,1jsygxveue7up
+本田有紀華,yukika4927
+加藤太樹,daikikato1012
+砂川陽輝,sunataka_daiz
+高山翔伍,takayama88
+増田 和彦,masuda3
+奥澤智宏,1hux5o5ot4xaf
+マンディス理恵,SriSaumya
+たかみず保江,2j2htucha7qcs
+柴川 桂子,ur23owsg32x9
+湊 たける,mmp1017
+杉崎記子,e6g2wsif4poe
+及川徳子,1nio75oy0gvo5
+谷口利治,36avgmf0hwmcc
+松井延子,hasunomi888
+門垣千春,Cheers_chiharukadogaki
+森岡 美子,kadzumiko
+神田 亜希,qabqe2fn8eha
+小熊真人,masato-oguma
+久保田くうき,kuki_kubota
+筏井 恵太,ikadai
+田所 康,Yasushi-Tadokoro
+田部 竜馬,RYM
+中田俊之,Hoshino1027
+月森 かいと,kaitotsukimori
+梶川奈津美,n_kajikawa
+伴多洋美,Winds-163
+嶺島華蓮,kxxbb
+川越恵,longseller
+岩田妙,2wopu5n156sks
+竹元真美,mami2127
+天野千恵里,cherry168
+木田由香利,yukari_wcon
+門馬みゆき,q1tm1065ufvo
+中島安紀子,akiko_na
+栗林功,miskocha_coo
+鈴木雅博,michael358
+齋藤伸也,shinya0124
+森谷俊之,toshiuki
+橘孝行,tachibana-takayuki
+西畑ありさ,1exia5c3ugrfh
+山本拓弥,chogori
+植木拓,2bttxcbtt2xwk
+田中三千代,4618472
+森田千尋,wh5c2w6ib68q
+中村貴之,catalog
+長谷川誠,hase_mako
+永瀬まみ,1tgjegjet86l0
+広田純子,hirojun55
+草刈亜希,22ugsr7iz680w
+細田収,hosoyan
+橋本和美,2anw1x7dwi3os
+日比野幸,2lmg6rg5i3s4s
+村松ゆみこ,yumiko-muramatsu
+白崎詩織,beca7rzvi562
+桑田幸江,lallure
+工藤佐和子,kudo030
+新田英博,hiderann
+松本暁快,akkiestyle
+坂本浩介,2w8dundia1c9
+石橋誠,31lh13hycnqcg
+齋藤ひとみ,hitomi-saito
+大澤恵美,2732902
+小笠原映子,1w7vpundxk25t
+神藤英輔,takumrsk
+本田翔也,13bkldtx0m257
+高橋崚,clmbx6n3j8t1
+藤田かこ,20yuxppkmz5wc
+坂本登,sakamoto0303
+木戸一敏,moel
+山本 大,masaru830
+木下亮雄,akiok
+下村珠世,7270831
+神田久美,1oip6zf7259q9
+藤波直子,gayatri
+大熊朋子,t_ookuma
+森川佳須代,3p8h897o4ps08
+豊田雅浩,CONCREATE
+小倉里枝,26vylw69ntgk4
+吉沼浩,2k14dkabru048
+河野弘典,hironori0903
+丸山拓臣,maruyamatakumi
+中辰哉,m29ovty78hp3
+神村侑希,2ttu9n2hf8cgk
+大平和幸,sandhill
+島田旬志,shima39
+宇佐美晴朗,u1ogzmsddfjz
+馬場三奈,3e0gei7r4bokk
+草加晃臣,1h0ab07qfau03
+野瀬貴士,1bumworycz6fd
+平尾玲奈,34wwlze4gb40w
+藤田寿江,toshie55
+高木徹,3vxhhwxz7og0s
+牧 隆行,rollupjp
+白崎ほなみ,whe4r5qdocat
+加藤慎二,SK0007
+鴇田真弥,3aqo73f5hlycw
+竹岡 佳信,nobu_takeoka
+高本栄子,7558565
+小迫優子,3fwhk4d6mm684
+花咲彩,ayahanasaki
+鈴木夏香,natsukah
+高野 浩,t1jlb8cj2r9a
+土師 鈴子,panthers_haji
+雲野 和哉,kazuya_u
+田中直子,Naoko_Tanaka
+塩川真澄,mas7799
+坂井宏爾,sakaikoji
+橘美奈,sgoc6ujbtngr
+船引佑太,bibikio
+山口真導,bizubu
+山崎南（育休中）,2uz80l24sq2og
+ヴィスファダー夏海（育休中）,alpacamoco1440
+山本リカ（育休中）,24p6a9bp1lhc0
+井田玲華（育休中）,21dtangy03q8k
+戸口悠里（サポートメンバー）,1lme78j55vivo</textarea>
+    </section>
+  </main>
+  <script>
+    const q = document.getElementById("q");
+    const rows = Array.from(document.querySelectorAll("#list tr"));
+    const shown = document.getElementById("shown");
+    const tsv = document.getElementById("tsv");
+    function apply() {
+      const key = q.value.trim().toLowerCase();
+      let n = 0;
+      const lines = [];
+      rows.forEach((tr) => {
+        const hit = !key || tr.dataset.q.toLowerCase().includes(key);
+        tr.hidden = !hit;
+        if (hit) {
+          n += 1;
+          const cells = tr.querySelectorAll("td");
+          lines.push(cells[1].textContent + "," + cells[2].textContent);
+        }
+      });
+      shown.textContent = n + "名を表示";
+      tsv.value = lines.join("\n");
+    }
+    q.addEventListener("input", apply);
+    document.getElementById("copy").addEventListener("click", async () => {
+      const btn = document.getElementById("copy");
+      try {
+        await navigator.clipboard.writeText(tsv.value);
+        btn.textContent = "コピーしました";
+      } catch (e) {
+        tsv.focus();
+        tsv.select();
+        btn.textContent = "下の欄をコピーしてください";
+      }
+      setTimeout(() => { btn.textContent = "名前,IDをコピー"; }, 1600);
+    });
+  </script>
+</body>
+</html>
